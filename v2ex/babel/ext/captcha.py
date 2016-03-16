@@ -8,7 +8,8 @@ from google.appengine.api import urlfetch
     Version 0.1
 """
 
-API_SSL_SERVER  ="https://api-secure.recaptcha.net"
+#API_SSL_SERVER  ="https://api-secure.recaptcha.net"
+API_SSL_SERVER  ="https://bbs.91syt.com"
 API_SERVER      ="http://api.recaptcha.net"
 VERIFY_SERVER   ="api-verify.recaptcha.net"
 

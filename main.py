@@ -363,7 +363,7 @@ class SignupHandler(webapp.RequestHandler):
         member = False
         chtml = captcha.displayhtml(
             public_key = config.recaptcha_public_key,
-            use_ssl = False,
+            use_ssl = True,
             error = None)
         browser = detect(self.request)
         template_values = {}

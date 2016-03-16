@@ -5,8 +5,11 @@
 ### letsencrypt
 
 `virtualenv pyenv27`
+
 `source pyenv27/bin/activate`
+
 `./letsencrypt-auto`
+
 `.local/share/letsencrypt/bin/letsencrypt -d domain.com -a manual certonly`
 
 配置nginx ssl

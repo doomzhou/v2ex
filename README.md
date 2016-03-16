@@ -1,3 +1,56 @@
+## 尝试在GAE上部署v2ex
+
+尝试在GAE上部署v2ex,顺便通过nginx做反向代理,letsencrypt做ssl证书
+
+### letsencrypt
+
+`virtualenv pyenv27`
+`source pyenv27/bin/activate`
+`./letsencrypt-auto`
+`.local/share/letsencrypt/bin/letsencrypt -d domain.com -a manual certonly`
+
+配置nginx ssl
+    
+    
+    ssl_certificate     /etc/letsencrypt/live/bbs.91syt.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/bbs.91syt.com/privkey.pem;
+    ssl_session_cache shared:SSL:200m;
+    ssl_session_timeout 20m;
+
+    ssl_prefer_server_ciphers on;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
+
+
+
+    location ^~ /.well-known/acme-challenge/ {
+        alias /var/www/challenges/;
+    }
+
+### Nginx 反向代理
+
+    location / {
+        proxy_pass  http://doom-1245.appspot.com/;
+        proxy_set_header Host doom-1245.appspot.com;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_intercept_errors on;
+    }
+    location /challenge {
+        proxy_pass  https://www.google.com/recaptcha/api/challenge;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_intercept_errors on;
+    }
+
+
+
+### 引用
+
+[letsencrypt](https://github.com/letsencrypt/letsencrypt)
+
+[v2ex-github](https://github.com/doomzhou/v2ex/tree/devdoom)
+
 # Project Babel 2
 
 Project Babel 2 is an open source software package for creating and supporting communities. It's written in Python and running on [Google App Engine](http://code.google.com/appengine), which is a free and robust cloud hosting infrastructure.
